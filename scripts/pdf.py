@@ -11,7 +11,7 @@ import easygui
 class GenerarReportePDF():
 
     def __init__(self):
-        self.logo = 'img/logoSARO.png'
+        self.logo = 'img/logo.png'
         self.img_momentos = 'img/DetalleMomentos.png'
         self.img_definicion = 'img/DefinicionResistenciaNominalFlexion.png'
         self.img_ductilidad = 'img/RequisitosAceroLongitudinalDuctilidad.png'
@@ -526,4 +526,7 @@ class GenerarReportePDF():
         Story.append(Spacer(1, 12))
         Story.append(im_ubi_solapes_acero_long)
         Story.append(Spacer(1, 12))
-        self.doc.build(Story)
+        try:
+            self.doc.build(Story)
+        except TypeError:
+            pass

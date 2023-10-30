@@ -319,9 +319,12 @@ class FuncionesVPrincipal():
             self.irregularidad_altura = 0
         if self.ausencia_redundancia == '':
             self.ausencia_redundancia = 0
-        self.coeficiente_disipacion_energia = float(self.parametro_R)*float(
+        try:
+            self.coeficiente_disipacion_energia = float(self.parametro_R)*float(
             self.irregularidad_altura)*float(self.irregularidad_planta)*float(
                 self.ausencia_redundancia)
+        except ValueError:
+            self.coeficiente_disipacion_energia = 0
         self.label_coeficiente_disipacion_energia.setText(str(
             self.coeficiente_disipacion_energia))
         self.guardar_cambio(
@@ -1392,6 +1395,7 @@ class FuncionesVPrincipal():
         self.guardar_cambio(
             'Parametro_a', 'FHE', 'VALOR',
             self.parametro_a)
+        self.calcular_periodos()
 
     def calcular_periodos(self):
         self.aceleracion_pico_efectiva = float(self.label_aceleracion_pico_efectiva.text())
@@ -1545,17 +1549,32 @@ class FuncionesVPrincipal():
             if dato < self.periodo_corto:
                 espectro_aceleracion_corto = 2.5*self.aceleracion_pico_efectiva*self.parametro_Fa*self.coeficiente_importancia
                 self.datos_espectro_aceleracion.append(espectro_aceleracion_corto)
-                self.datos_espectro_aceleracion_reducido.append(espectro_aceleracion_corto/self.coeficiente_disipacion_energia)
+                try:
+                    self.datos_espectro_aceleracion_reducido.append(espectro_aceleracion_corto/self.coeficiente_disipacion_energia)
+                except ZeroDivisionError:
+                    self.datos_espectro_aceleracion_reducido.append(0.0)
             elif self.periodo_corto < dato < self.periodo_largo:
                 espectro_aceleracion_intermedio = 1.2*self.velocidad_pico_efectiva*self.parametro_Fv*self.coeficiente_importancia/dato
                 self.datos_espectro_aceleracion.append(espectro_aceleracion_intermedio)
-                self.datos_espectro_aceleracion_reducido.append(espectro_aceleracion_intermedio/self.coeficiente_disipacion_energia)
+                try:
+                    self.datos_espectro_aceleracion_reducido.append(espectro_aceleracion_intermedio/self.coeficiente_disipacion_energia)
+                except ZeroDivisionError:
+                    self.datos_espectro_aceleracion_reducido.append(0.0)
             elif dato > self.periodo_largo:
                 espectro_aceleracion_largo = 1.2*self.velocidad_pico_efectiva*self.parametro_Fv*self.periodo_largo*self.coeficiente_importancia/(dato**2)
                 self.datos_espectro_aceleracion.append(espectro_aceleracion_largo)
-                self.datos_espectro_aceleracion_reducido.append(espectro_aceleracion_largo/self.coeficiente_disipacion_energia)
-        plt.plot(self.datos_periodo, self.datos_espectro_aceleracion, label = 'Pleno')
-        plt.plot(self.datos_periodo, self.datos_espectro_aceleracion_reducido, label = 'Reducido')
+                try:
+                    self.datos_espectro_aceleracion_reducido.append(espectro_aceleracion_largo/self.coeficiente_disipacion_energia)
+                except ZeroDivisionError:
+                    self.datos_espectro_aceleracion_reducido.append(0.0)
+        try:
+            plt.plot(self.datos_periodo, self.datos_espectro_aceleracion, label = 'Pleno')
+        except ValueError:
+            plt.plot(0, 0, label = 'Pleno')
+        try:
+            plt.plot(self.datos_periodo, self.datos_espectro_aceleracion_reducido, label = 'Reducido')
+        except ValueError:
+            plt.plot(0, 0, label = 'Reducido')
         plt.xlabel('T(s)')
         plt.ylabel('Sa(g)')
         plt.title('ESPECTRO ELASTICO DE ACELERACION')

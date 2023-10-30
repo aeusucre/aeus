@@ -14,7 +14,7 @@ class CargarDatosVPrincipal():
             self.datos_memoria.equipo_trabajo_proyecto)
         self.combo_box_norma.addItem(
             self.datos_memoria.norma_proyecto)
-        qpixmap = QPixmap('img/logoSARO.png')
+        qpixmap = QPixmap('img/logo.png')
         self.label_logo_grande.setPixmap(qpixmap)
         self.label_logo_pequeno.setPixmap(qpixmap)
 
