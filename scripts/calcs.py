@@ -749,6 +749,9 @@ class CalculosInternosVPrincipal():
         self.separacion_estribo = 100
         self.separacion_minima_estribo = 50
         self.chequeo_estribo = 'cumple'
+        self.corte_resistente_acero = 0
+        self.corte_resistente_acero_1 = 0
+        self.corte_resistente_acero_2 = 0
         self.corte_maximo_probable = max(self.corte_izquierdo, self.corte_derecho)
         self.corte_diseno = max(self.corte_ultimo_viga, self.corte_maximo_probable)
         try:
@@ -765,10 +768,13 @@ class CalculosInternosVPrincipal():
             except ZeroDivisionError:
                 self.corte_resistente_concreto = 0.0
         if self.corte_diseno >= (self.corte_resistente_concreto*self.minoracion_resistencia_corte)/2 and self.corte_diseno <= (self.corte_resistente_concreto*self.minoracion_resistencia_corte):
-            self.separacion_minima_estribo = min(
+            try:
+                self.separacion_minima_estribo = min(
                                         16*self.area_transversal_refuerzo*(self.fluencia_acero/10)/(self.base_viga_d*(self.resistencia_concreto/10)**(1/2)),
                                         2.86*self.area_transversal_refuerzo*(self.fluencia_acero/10)/self.base_viga_d,
                                         self.altura_util/2)
+            except ZeroDivisionError:
+                self.separacion_minima_estribo = 0.0
         elif self.corte_diseno >= (self.corte_resistente_concreto*self.minoracion_resistencia_corte):
             self.corte_resistente_acero_1 = self.corte_diseno - self.corte_resistente_concreto
             self.corte_resistente_acero_2 = ((self.area_transversal_refuerzo*100)*(self.fluencia_acero/10)*(self.altura_util*10)/self.separacion_estribo)/10000

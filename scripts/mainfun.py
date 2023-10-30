@@ -4,6 +4,7 @@ from scripts.bars import VentanaBarras
 from scripts.mats import VentanaMateriales
 import matplotlib.pyplot as plt
 from scripts.pdf import GenerarReportePDF
+from PyQt5 import QtWidgets, uic
 
 class FuncionesVPrincipal():
 
@@ -1487,6 +1488,8 @@ class FuncionesVPrincipal():
             self.periodo_fema = self.periodo_elemento_finito
         elif self.periodo_elemento_finito < self.periodo_aproximado:
             self.periodo_fema = self.periodo_aproximado
+        else:
+            self.periodo_fema = 0
         self.label_periodo_fema.setText(str(self.periodo_fema))
         self.guardar_cambio(
             'Periodo_Ele_Fini', 'FHE', 'VALOR',
@@ -1589,6 +1592,26 @@ class FuncionesVPrincipal():
         self.ventana_barras = VentanaBarras()
         self.ventana_barras.show()
     
+    def abrir_ventana_acerca_de(self):
+        self.ventana_acerca_de = VentanaAcercaDe()
+        self.ventana_acerca_de.show()
+
+    def abrir_ventana_licencia(self):
+        self.ventana_licencia = VentanaLicencia()
+        self.ventana_licencia.show()
+    
     def generar_pdf_viga(self):
         pdf_viga = GenerarReportePDF()
         pdf_viga.crear_pdf_viga()
+
+
+class VentanaAcercaDe(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(VentanaAcercaDe, self).__init__()
+        uic.loadUi('gui/about.ui', self)
+
+
+class VentanaLicencia(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(VentanaLicencia, self).__init__()
+        uic.loadUi('gui/license.ui', self)

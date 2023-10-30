@@ -1,3 +1,4 @@
+from sys import exit
 
 class ConexionesVPrincipal():
 
@@ -20,6 +21,12 @@ class ConexionesVPrincipal():
             lambda: self.abrir_ventana_materiales())
         self.action_barras_acero.triggered.connect(
             lambda: self.abrir_ventana_barras())
+        self.action_acerca_de.triggered.connect(
+            lambda: self.abrir_ventana_acerca_de())
+        self.action_licencia.triggered.connect(
+            lambda: self.abrir_ventana_licencia())
+        self.action_salir.triggered.connect(
+            lambda: exit())
 
     def conectar_cambios_texto_frame_inicio(self):
         self.text_edit_proyecto.textChanged.connect(
